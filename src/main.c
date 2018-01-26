@@ -145,13 +145,15 @@ signal_handler (int number)
 | Prepare to handle signals, intercept willingful requests for stopping.  |
 `------------------------------------------------------------------------*/
 
-/* FIXME: Use sigaction */
-
 static void
 setup_signals (void)
 {
 #ifdef SIGPIPE
-  signal (SIGPIPE, signal_handler);
+  struct sigaction sa;
+  sa.sa_handler = signal_handler;
+  sa.sa_flags = 0;
+  sigemptyset(&sa.sa_mask);
+  sigaction(SIGPIPE, &sa, NULL);  /* ignore error: none possible */
 #endif
 }
 
